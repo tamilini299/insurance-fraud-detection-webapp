@@ -10,6 +10,8 @@ from tensorflow.keras.models import load_model
 import google.generativeai as genai
 from dotenv import load_dotenv
 import traceback
+from functools import lru_cache
+
 
 # =========================
 # 1) Environment & Gemini
@@ -82,17 +84,23 @@ except Exception as e:
     print("⚠️ Azure SQL connectivity test failed:", e)
 
 # =========================
-# 4) ML Models & Dataset
+# 4) ML Models (lazy-loaded; no CSV at runtime)
 # =========================
-try:
+@lru_cache(maxsize=1)
+def get_models():
+    """
+    Load models once on first use and cache them.
+    """
+    print("📦 Loading ML models (first call only)...")
     preprocessor = joblib.load("preprocessor.pkl")
     stacked_model = joblib.load("stacked_model.pkl")
     autoencoder = load_model("autoencoder.h5", compile=False)
-   df_full = None   # no longer loading dataset locally
-    print("ML models and dataset loaded successfully.")
-except FileNotFoundError as e:
-    print(f"ERROR: Could not load a required file: {e}. Make sure all .pkl, .h5, and .csv files are present.")
-    preprocessor = stacked_model = autoencoder = df_full = None
+    print("✅ Models loaded.")
+    return preprocessor, stacked_model, autoencoder
+
+# We no longer keep a big dataframe in memory
+df_full = None
+
 
 # =========================
 # 5) Schemas
@@ -154,6 +162,8 @@ provider_data = get_provider_data(provider_id)
 
 if provider_data.empty:
     raise HTTPException(status_code=404, detail=f"Provider ID '{provider_id}' not found in SQL database.")
+# Load models once (cached)
+preprocessor, stacked_model, autoencoder = get_models()
 
     provider_data_fe = create_provider_features(provider_data)
 
@@ -330,4 +340,5 @@ async def submit_claim(request: Request):
         print("🔥 SQL ERROR:", str(e))
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
+
 
