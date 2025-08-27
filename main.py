@@ -65,7 +65,13 @@ ODBC_CONN_STR = (
 def get_conn():
     """Open a fresh pyodbc connection (recommended per-request for FastAPI)."""
     return pyodbc.connect(ODBC_CONN_STR)
-
+def get_provider_data(provider_id: str):
+    """
+    Fetch provider-specific claims directly from Azure SQL.
+    """
+    query = "SELECT * FROM dbo.Claims WHERE Provider = ?"
+    with get_conn() as conn:
+        return pd.read_sql(query, conn, params=[provider_id])
 # Optional: test connection on startup (won't crash app if it fails)
 try:
     with get_conn() as _c:
@@ -82,7 +88,7 @@ try:
     preprocessor = joblib.load("preprocessor.pkl")
     stacked_model = joblib.load("stacked_model.pkl")
     autoencoder = load_model("autoencoder.h5", compile=False)
-    df_full = pd.read_csv("Final_Fraud_Dataset_Fixed.csv", low_memory=False)
+   df_full = None   # no longer loading dataset locally
     print("ML models and dataset loaded successfully.")
 except FileNotFoundError as e:
     print(f"ERROR: Could not load a required file: {e}. Make sure all .pkl, .h5, and .csv files are present.")
@@ -143,11 +149,11 @@ async def predict_fraud(request: PredictionRequest):
     if df_full is None:
         raise HTTPException(status_code=500, detail="Server is not ready. Models or data not loaded.")
 
-    provider_id = request.provider_id
-    provider_data = df_full[df_full["Provider"] == provider_id]
+   provider_id = request.provider_id
+provider_data = get_provider_data(provider_id)
 
-    if provider_data.empty:
-        raise HTTPException(status_code=404, detail=f"Provider ID '{provider_id}' not found.")
+if provider_data.empty:
+    raise HTTPException(status_code=404, detail=f"Provider ID '{provider_id}' not found in SQL database.")
 
     provider_data_fe = create_provider_features(provider_data)
 
@@ -324,3 +330,4 @@ async def submit_claim(request: Request):
         print("🔥 SQL ERROR:", str(e))
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
+
