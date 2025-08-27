@@ -1,0 +1,61 @@
+/* Hospital page overrides only. Base visuals come from login.css */
+
+/* center header + each card to match your mock */
+#hospital-page .header,
+#hospital-page > .card {
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+#hospital-page .header { margin-top: 18px; }
+#hospital-page > .card { margin-top: 18px; }
+
+/* intro band (title in center with small icon) */
+.intro-band{
+  max-width: 1100px;
+  margin: 18px auto 2px;
+  text-align: center;
+  padding-top: 6px;
+}
+.intro-icon{
+  font-size: 22px;
+  color: #1d4ed8;
+  margin-bottom: 6px;
+}
+.intro-title{
+  margin: 0;
+  font-weight: 700;
+  color: #1d4ed8;
+}
+.intro-subtitle{
+  margin: 4px 0 0;
+  color: var(--muted, #6b7da0);
+}
+
+/* small helpers to match spacing/look */
+.field-error{
+  display:none;
+  color:#ef4444;
+  margin-top:6px;
+  font-size:12px;
+}
+.checkbox-line{ display:flex; align-items:center; gap:10px; margin:6px 0; }
+.card-divider{ border:none; border-top:1px solid #e7efff; margin:16px 0; }
+.submit-center{ display:block; margin: 4px auto 4px; min-width:270px; }
+
+/* responsive widths like admin */
+@media (min-width: 1536px) {
+  #hospital-page .header,
+  #hospital-page > .card,
+  .intro-band { max-width: 1200px; }
+}
+@media (max-width: 1200px) {
+  #hospital-page .header,
+  #hospital-page > .card,
+  .intro-band { max-width: 1000px; }
+}
+@media (max-width: 992px) {
+  #hospital-page .header,
+  #hospital-page > .card,
+  .intro-band { max-width: 100%; }
+}

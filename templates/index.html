@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BAYMAX – Secure Access Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="login.css">
+</head>
+<body>
+  <main class="auth-wrapper">
+    <div class="brand">
+      <div class="logo"><i class="fa-solid fa-heart"></i></div>
+      <h1>BAYMAX</h1>
+      <p class="subtitle">Insurance Fraud Detection System</p>
+      <p class="muted"><i class="fa-solid fa-shield-halved"></i> Secure Access Portal</p>
+    </div>
+
+    <section class="card auth-card">
+      <h2 class="center">Welcome Back</h2>
+      <p class="center muted">Select your access type and sign in to continue</p>
+
+      <div class="role-toggle" id="roleToggle">
+        <button type="button" class="role-btn active" data-role="admin">
+          <i class="fa-solid fa-shield"></i> Admin
+        </button>
+        <button type="button" class="role-btn" data-role="hospital">
+          <i class="fa-solid fa-hospital"></i> Hospital
+        </button>
+      </div>
+
+      <form id="loginForm" class="form">
+        <div class="form-group">
+          <label id="emailLabel">Administrator Email</label>
+          <input id="emailInput" type="email" placeholder="admin@baymax.com" class="input">
+        </div>
+
+        <div class="form-group">
+          <label>Password</label>
+          <div class="password-wrap">
+            <input id="passwordInput" type="password" placeholder="••••••••" class="input">
+            <i class="fa-solid fa-lock trailing"></i>
+          </div>
+        </div>
+
+        <button id="signinBtn" type="submit" class="btn primary w-full">
+          <i class="fa-solid fa-right-to-bracket"></i>
+          <span>Sign In as Administrator</span>
+        </button>
+
+        <p class="forgot center"><a href="#" tabindex="-1">Forgot Password?</a></p>
+      </form>
+    </section>
+
+    <p class="footer muted">Protected by industry-standard encryption<br>© 2024 BAYMAX Fraud Detection System</p>
+  </main>
+
+  <script src="login.js"></script>
+</body>
+</html>
